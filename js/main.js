@@ -1,118 +1,3 @@
-// Datos de categorías
-const categorias = [
-  {
-    nombre: "Estrategia",
-    imagen: "img/categoria1.jpg"
-  },
-  {
-    nombre: "Familiares",
-    imagen: "img/categoria2.jpg"
-  },
-  {
-    nombre: "Fiesta",
-    imagen: "img/categoria3.jpg"
-  },
-  {
-    nombre: "Infantiles",
-    imagen: "img/categoria4.jpg"
-  }
-];
-
-// Datos de juegos por categoría
-const juegos = {
-  Estrategia: [
-    {
-      nombre: "Catan",
-      imagen: "img/juego1.jpg",
-      descripcion: "Un juego de estrategia y comercio en una isla en expansión.",
-      precio: 25000,
-      descuento: 10
-    },
-    {
-      nombre: "Carcassonne",
-      imagen: "img/juego2.jpg",
-      descripcion: "Construye ciudades y caminos en este clásico de colocación de losetas.",
-      precio: 20000,
-      descuento: 0
-    },
-    {
-      nombre: "Risk",
-      imagen: "img/juego3.jpg",
-      descripcion: "Conquista el mundo en este legendario juego de estrategia militar.",
-      precio: 22000,
-      descuento: 15
-    }
-  ],
-  Familiares: [
-    {
-      nombre: "Dixit",
-      imagen: "img/juego4.jpg",
-      descripcion: "Un juego de imaginación y narración para toda la familia.",
-      precio: 18000,
-      descuento: 0
-    },
-    {
-      nombre: "Ticket to Ride",
-      imagen: "img/juego5.jpg",
-      descripcion: "Construye rutas de tren y conecta ciudades en este divertido juego.",
-      precio: 24000,
-      descuento: 5
-    },
-    {
-      nombre: "Uno",
-      imagen: "img/juego6.jpg",
-      descripcion: "El clásico juego de cartas para disfrutar en familia.",
-      precio: 7000,
-      descuento: 0
-    }
-  ],
-  Fiesta: [
-    {
-      nombre: "Jungle Speed",
-      imagen: "img/juego7.jpg",
-      descripcion: "Velocidad y reflejos en un juego ideal para animar cualquier reunión.",
-      precio: 12000,
-      descuento: 20
-    },
-    {
-      nombre: "Time's Up",
-      imagen: "img/juego8.jpg",
-      descripcion: "Risas aseguradas con este juego de adivinanzas y mímica.",
-      precio: 15000,
-      descuento: 0
-    },
-    {
-      nombre: "Pictionary",
-      imagen: "img/juego9.jpg",
-      descripcion: "Dibuja y adivina en este clásico de las fiestas.",
-      precio: 14000,
-      descuento: 10
-    }
-  ],
-  Infantiles: [
-    {
-      nombre: "Candy Land",
-      imagen: "img/juego10.jpg",
-      descripcion: "Un colorido juego de recorrido para los más pequeños.",
-      precio: 10000,
-      descuento: 0
-    },
-    {
-      nombre: "Serpientes y Escaleras",
-      imagen: "img/juego11.jpg",
-      descripcion: "El clásico juego de suerte y diversión para niños.",
-      precio: 8000,
-      descuento: 5
-    },
-    {
-      nombre: "Dobble Kids",
-      imagen: "img/juego12.jpg",
-      descripcion: "Agudeza visual y rapidez en un formato infantil.",
-      precio: 9000,
-      descuento: 0
-    }
-  ]
-};
 
 // --- INTEGRACIÓN CON API FREETOGAME ---
 const API_BASE = 'https://www.freetogame.com/api';
@@ -131,7 +16,24 @@ const categoriaGeneroMap = {
   'Infantiles': ['anime', 'social', 'sports']
 };
 
-const categoriasLocales = Object.keys(categoriaGeneroMap);
+const categoriasLocales = [
+  {
+    nombre: "Estrategia",
+    imagen: "https://cdn.ligadegamers.com/imagenes/age-of-empires-ii-definitive-edition-0-cke.jpg"
+  },
+  {
+    nombre: "Familiares",
+    imagen: "https://img.europapress.es/fotoweb/fotonoticia_20160309110619_1200_v2.jpg"
+  },
+  {
+    nombre: "Fiesta",
+    imagen: "https://cuponassets.cuponatic-latam.com/backendPe/uploads/imagenes_descuentos/111056/9ef6bbbdcd12ea3b22c5a9d3c85f40a21db87756.XL2.jpg"
+  },
+  {
+    nombre: "Infantiles",
+    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuWWW0Di8W-V-WBnwEQyV2NaOT7xuZNP2D8A&s"
+  }
+];
 
 async function obtenerCategoriasAPI() {
   // Obtenemos todos los juegos y extraemos los géneros únicos (por si quieres verlos)
@@ -139,14 +41,29 @@ async function obtenerCategoriasAPI() {
   const data = await res.json();
   const cats = [...new Set(data.map(j => j.genre))];
   categoriasAPI = cats.slice(0, 10); // máximo 10 categorías
-  // Puedes ver los géneros únicos en consola:
-  console.log('Géneros únicos de la API:', cats);
   juegosAPI = data; // Guardamos todos los juegos para filtrar localmente
   juegosFiltrados = data;
   juegosMostrados = 0;
 }
 
-// Ya no usamos obtenerJuegosAPI por categoría, solo traemos todos y filtramos localmente
+
+function mostrarImagenCategoria(nombreCategoria) {
+  const contImg = document.getElementById('categoria-imagen');
+  if (!contImg) return;
+  if (!nombreCategoria) {
+    contImg.innerHTML = '';
+    return;
+  }
+  const cat = categoriasLocales.find(c => c.nombre === nombreCategoria);
+  if (cat && cat.imagen) {
+    contImg.innerHTML = `
+      <img src="${cat.imagen}" alt="${cat.nombre}">
+      <span class="titulo-categoria">${cat.nombre}</span>
+    `;
+  } else {
+    contImg.innerHTML = '';
+  }
+}
 
 function renderFiltrosAPI() {
   const contFiltros = document.getElementById('filtros');
@@ -159,18 +76,20 @@ function renderFiltrosAPI() {
     categoriaSeleccionada = null;
     juegosFiltrados = juegosAPI;
     juegosMostrados = 0;
+    mostrarImagenCategoria(null);
     renderJuegosAPI();
   };
   contFiltros.appendChild(btnTodos);
   categoriasLocales.forEach(cat => {
     const btn = document.createElement('button');
-    btn.textContent = cat;
+    btn.textContent = cat.nombre;
     btn.className = 'boton';
     btn.onclick = () => {
-      categoriaSeleccionada = cat;
+      categoriaSeleccionada = cat.nombre;
       // Filtrar juegos cuyo género esté en el array asociado a la categoría
-      juegosFiltrados = juegosAPI.filter(j => categoriaGeneroMap[cat].some(g => j.genre && j.genre.toLowerCase().includes(g.toLowerCase())));
+      juegosFiltrados = juegosAPI.filter(j => categoriaGeneroMap[cat.nombre].some(g => j.genre && j.genre.toLowerCase().includes(g.toLowerCase())));
       juegosMostrados = 0;
+      mostrarImagenCategoria(cat.nombre);
       renderJuegosAPI();
     };
     contFiltros.appendChild(btn);
@@ -218,12 +137,12 @@ function renderJuegosAPI() {
 async function iniciarAPI() {
   await obtenerCategoriasAPI();
   renderFiltrosAPI();
+  mostrarImagenCategoria(null);
   renderJuegosAPI();
 }
 
 // --- FIN INTEGRACIÓN API ---
 
-// Mantengo la lógica local para fallback o pruebas
 // Renderizado dinámico en index.html
 function renderFiltros() {
   const contFiltros = document.getElementById('filtros');

@@ -210,4 +210,39 @@ footer {
 }
 .filtros .boton {
   margin-bottom: 0.5rem;
+}
+
+.categoria-imagen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  min-height: 200px;
+  width: 100%;
+  position: relative;
+}
+.categoria-imagen img {
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.categoria-imagen .titulo-categoria {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  background: rgba(38, 70, 83, 0.7);
+  padding: 0.7rem 2rem;
+  border-radius: 8px;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 } 
