@@ -1,4 +1,3 @@
-
 // --- INTEGRACIÓN CON API FREETOGAME ---
 const API_BASE = 'https://www.freetogame.com/api';
 let categoriasAPI = [];
@@ -70,8 +69,9 @@ function renderFiltrosAPI() {
   if (!contFiltros) return;
   contFiltros.innerHTML = '';
   const btnTodos = document.createElement('button');
+  btnTodos.textName = 'Todos';
   btnTodos.textContent = 'Todos';
-  btnTodos.className = 'boton';
+  btnTodos.className = 'btn btn-genero btn-sm';
   btnTodos.onclick = () => {
     categoriaSeleccionada = null;
     juegosFiltrados = juegosAPI;
@@ -83,10 +83,9 @@ function renderFiltrosAPI() {
   categoriasLocales.forEach(cat => {
     const btn = document.createElement('button');
     btn.textContent = cat.nombre;
-    btn.className = 'boton';
+    btn.className = 'btn btn-genero btn-sm';
     btn.onclick = () => {
       categoriaSeleccionada = cat.nombre;
-      // Filtrar juegos cuyo género esté en el array asociado a la categoría
       juegosFiltrados = juegosAPI.filter(j => categoriaGeneroMap[cat.nombre].some(g => j.genre && j.genre.toLowerCase().includes(g.toLowerCase())));
       juegosMostrados = 0;
       mostrarImagenCategoria(cat.nombre);
@@ -97,19 +96,24 @@ function renderFiltrosAPI() {
 }
 
 function renderJuegosAPI() {
-  const contJuegos = document.getElementById('juegos');
+  const contJuegos = document.getElementById('juegos-row');
   if (!contJuegos) return;
   contJuegos.innerHTML = '';
   const juegosAMostrar = juegosFiltrados.slice(0, juegosMostrados + JUEGOS_POR_CARGA);
   juegosAMostrar.forEach(juego => {
-    contJuegos.innerHTML += `
-      <article class=\"juego\">
-        <img src=\"${juego.thumbnail}\" alt=\"${juego.title}\">
-        <h3>${juego.title}</h3>
-        <p>${juego.short_description}</p>
-        <p class=\"precio\">Género: ${juego.genre}</p>
-      </article>
+    const col = document.createElement('div');
+    col.className = 'col-12 col-sm-6 col-md-4 col-lg-3 mb-4';
+    col.innerHTML = `
+      <div class="card h-100 shadow-sm">
+        <img src="${juego.thumbnail}" class="card-img-top" alt="${juego.title}" style="height: 180px; object-fit: cover;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">${juego.title}</h5>
+          <p class="card-text small flex-grow-1">${juego.short_description}</p>
+          <p class="card-text"><span class="badge badge-genero">${juego.genre}</span></p>
+        </div>
+      </div>
     `;
+    contJuegos.appendChild(col);
   });
   juegosMostrados = juegosAMostrar.length;
   // Botón cargar más siempre en una línea aparte
@@ -121,7 +125,7 @@ function renderJuegosAPI() {
   if (juegosMostrados < juegosFiltrados.length) {
     const btnLoad = document.createElement('button');
     btnLoad.textContent = 'Cargar más';
-    btnLoad.className = 'boton';
+    btnLoad.className = 'btn btn-ludoteca';
     btnLoad.onclick = () => {
       renderJuegosAPI();
     };
@@ -129,7 +133,7 @@ function renderJuegosAPI() {
   }
   contJuegos.after(loadMoreContainer);
   if (juegosFiltrados.length === 0) {
-    contJuegos.innerHTML = '<p>No hay juegos para mostrar en esta categoría.</p>';
+    contJuegos.innerHTML = '<div class="col-12"><p class="text-center">No hay juegos para mostrar en esta categoría.</p></div>';
   }
 }
 
